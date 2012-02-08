@@ -1,0 +1,3 @@
+This is a framework for automatically detecting flagged variables, parsing them with Apache CLI, and injecting them with Guice.
+
+See the example class for examples, but the key thing is that you annotate variables with @Flag, pass classes with flagged variables to Flags.flagBindings, and bootstrap a Guice module that'll do all the desired injection using Flags.bootstrapFlagInjector.
