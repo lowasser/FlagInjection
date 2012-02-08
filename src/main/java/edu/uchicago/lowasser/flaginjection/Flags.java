@@ -1,3 +1,18 @@
+/**
+ * Copyright 2012 Louis Wasserman
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package edu.uchicago.lowasser.flaginjection;
 
 import com.google.common.base.Throwables;
@@ -179,7 +194,15 @@ public final class Flags {
         try {
           Object result = Converters.converterFor(literal).parse(value);
 
-          bind(literal).annotatedWith(flagAnnotation).toInstance(result);
+          if (result == null) {
+            if (flagAnnotation.optional()) {
+              continue;
+            } else {
+              throw new RuntimeException();
+            }
+          } else {
+            bind(literal).annotatedWith(flagAnnotation).toInstance(result);
+          }
         } catch (RuntimeException e) {
           if (!flagAnnotation.optional()) {
             new HelpFormatter().printHelp(130, main, "", options, "");
